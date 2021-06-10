@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <button id="start">playSound</button>
+    <script type="text/javascript">
+    const audioPlay = async url => {
+        const context = new AudioContext();
+        const source = context.createBufferSource();
+        const audioBuffer = await fetch(url)
+            .then(res => res.arrayBuffer())
+            .then(ArrayBuffer => context.decodeAudioData(ArrayBuffer));
+
+        source.buffer = audioBuffer;
+        source.connect(context.destination);
+        source.start();
+    };
+
+    document.querySelector('#start').onclick = () => audioPlay('Drums.mp3');
+    </script>
+</body>
+
+</html>
