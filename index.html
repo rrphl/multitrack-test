@@ -16,9 +16,24 @@
     <p>Guitars</p>
     <audio src="Guitars.mp3" id="guitars" crossorigin="anonymous"></audio>
     <input type="range" id="guitarfader" min="0" max="2" value="1" step="0.01" autocomplete="off" />
+    <br />
+    <p>Bass</p>
+    <audio src="Bass.mp3" id="bass" crossorigin="anonymous"></audio>
+    <input type="range" id="bassfader" min="0" max="2" value="1" step="0.01" autocomplete="off" />
+    <br />
+    <p>Synths</p>
+    <audio src="Synths.mp3" id="synths" crossorigin="anonymous"></audio>
+    <input type="range" id="synthfader" min="0" max="2" value="1" step="0.01" autocomplete="off" />
+    <br />
+    <p>Vocals</p>
+    <audio src="Vocals.mp3" id="vocals" crossorigin="anonymous"></audio>
+    <input type="range" id="vocalfader" min="0" max="2" value="1" step="0.01" autocomplete="off" />
     <script type="text/javascript">
     const drums = document.querySelector('#drums').src;
     const guitars = document.querySelector('#guitars').src;
+    const bass = document.querySelector('#bass').src;
+    const synths = document.querySelector('#synths').src;
+    const vocals = document.querySelector('#vocals').src;
     const playButton = document.querySelector('#playbutton');
     const pauseButton = document.querySelector('#pausebutton');
 
@@ -31,13 +46,14 @@
         const response = await fetch(filePath);
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer)
-        console.log("audioBuffer:", audioBuffer)
         return audioBuffer;
     }
 
     // function to call each file and return an array of decoded files
     async function loadFile(filePath) {
-        const track = await getFile(filePath);
+        const track = [];
+        track.push(await getFile(filePath));
+        track.push(filePath);
         console.log("track:", track);
         return track;
     }
@@ -45,29 +61,25 @@
     let offset = 0;
 
     // create a buffer, plop in data, connect and play
-    function playTrack(audioBuffer) {
+    function playTrack(audioBuffer, filePath) {
         const trackSource = audioCtx.createBufferSource();
         trackSource.buffer = audioBuffer;
         const gainNode = audioCtx.createGain();
-        const volumeControl = document.querySelector('#drumfader');
-        volumeControl.addEventListener('input', function() {
-            gainNode.gain.value = this.value;
-        }, false);
-        trackSource.connect(gainNode).connect(audioCtx.destination);
-        if (offset == 0) {
-            trackSource.start();
-            offset = audioCtx.currentTime;
-        } else {
-            trackSource.start(0, audioCtx.currentTime - offset);
+        if (filePath == drums) {
+            var volumeControl = document.querySelector('#drumfader');
         }
-        return trackSource;
-    }
-
-    function playTrack2(audioBuffer) {
-        const trackSource = audioCtx.createBufferSource();
-        trackSource.buffer = audioBuffer;
-        const gainNode = audioCtx.createGain();
-        const volumeControl = document.querySelector('#guitarfader');
+        if (filePath == guitars) {
+            var volumeControl = document.querySelector('#guitarfader');
+        }
+        if (filePath == bass) {
+            var volumeControl = document.querySelector('#drumfader');
+        }
+        if (filePath == synths) {
+            var volumeControl = document.querySelector('#guitarfader');
+        }
+        if (filePath == vocals) {
+            var volumeControl = document.querySelector('#drumfader');
+        }
         volumeControl.addEventListener('input', function() {
             gainNode.gain.value = this.value;
         }, false);
@@ -83,8 +95,8 @@
 
     playButton.addEventListener('click', () => {
         if (audioCtx != null) {
-            console.log("audioCtx != null");
             audioCtx.resume();
+            console.log("resumed")
             return;
         }
 
@@ -96,12 +108,24 @@
 
         // load file
         loadFile(drums).then((track) => {
-            playTrack(track);
+            playTrack(track[0], track[1]);
             console.log("drums playing");
         })
         loadFile(guitars).then((track) => {
-            playTrack2(track);
+            playTrack(track[0], track[1]);
             console.log("guitars playing");
+        })
+        loadFile(bass).then((track) => {
+            playTrack(track[0], track[1]);
+            console.log("bass playing");
+        })
+        loadFile(synths).then((track) => {
+            playTrack(track[0], track[1]);
+            console.log("synths playing");
+        })
+        loadFile(vocals).then((track) => {
+            playTrack(track[0], track[1]);
+            console.log("vocals playing");
         })
     });
 
