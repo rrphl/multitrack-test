@@ -46,6 +46,7 @@
         const response = await fetch(filePath);
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer)
+        console.log("audioBuffer:", audioBuffer)
         return audioBuffer;
     }
 
@@ -72,7 +73,7 @@
             var volumeControl = document.querySelector('#guitarfader');
         }
         if (filePath == bass) {
-            var volumeControl = document.querySelector('#drumfader');
+            var volumeControl = document.querySelector('#bassfader');
         }
         if (filePath == synths) {
             var volumeControl = document.querySelector('#guitarfader');
