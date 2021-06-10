@@ -79,7 +79,7 @@
             var volumeControl = document.querySelector('#guitarfader');
         }
         if (filePath == vocals) {
-            var volumeControl = document.querySelector('#drumfader');
+            var volumeControl = document.querySelector('#vocalfader');
         }
         volumeControl.addEventListener('input', function() {
             gainNode.gain.value = this.value;
