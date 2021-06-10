@@ -63,6 +63,24 @@
         return trackSource;
     }
 
+    function playTrack2(audioBuffer) {
+        const trackSource = audioCtx.createBufferSource();
+        trackSource.buffer = audioBuffer;
+        const gainNode = audioCtx.createGain();
+        const volumeControl = document.querySelector('#guitarfader');
+        volumeControl.addEventListener('input', function() {
+            gainNode.gain.value = this.value;
+        }, false);
+        trackSource.connect(gainNode).connect(audioCtx.destination);
+        if (offset == 0) {
+            trackSource.start();
+            offset = audioCtx.currentTime;
+        } else {
+            trackSource.start(0, audioCtx.currentTime - offset);
+        }
+        return trackSource;
+    }
+
     playButton.addEventListener('click', () => {
         if (audioCtx != null) {
             console.log("audioCtx != null");
