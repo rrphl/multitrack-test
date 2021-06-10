@@ -90,6 +90,10 @@
 
         audioCtx = new AudioContext();
 
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
         // load file
         loadFile(drums).then((track) => {
             playTrack(track);
